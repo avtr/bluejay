@@ -77,6 +77,12 @@ class Scan: Queueable {
             return element.uuid
         })
         
+        if duration != 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+                self?.fail(BluejayError.scanTimedOut)
+            }
+        }
+        
         manager.scanForPeripherals(withServices: services, options: [CBCentralManagerScanOptionAllowDuplicatesKey : allowDuplicates])
         
         if allowDuplicates {
